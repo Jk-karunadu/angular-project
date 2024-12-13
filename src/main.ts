@@ -8,7 +8,7 @@ import { EnvironmentLoaderService } from 'ngx-env';
 const loader = new EnvironmentLoaderService();
 
 // Load the environment variables before bootstrapping the application
-loader.loadEnvironment().then(() => {
+loader.load().then(() => {
   bootstrapApplication(AppComponent, appConfig)
     .catch((err) => console.error(err));
 }).catch((err:any) => {

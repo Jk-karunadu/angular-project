@@ -5,6 +5,8 @@ import { login, Product, SignUp } from '../datatype';
 import { Router } from '@angular/router';
 import { environment } from '../../../environment.prod';
 
+console.log(`${environment.backendUrl}`)
+
 @Injectable({
   providedIn: 'root',
 })
