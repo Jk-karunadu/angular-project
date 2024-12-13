@@ -3,6 +3,11 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+   "paths": {
+  "path": ["./node_modules/path-browserify"],
+  "util": ["./node_modules/util"],
+  "os": ["./node_modules/os-browserify"]
+},
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

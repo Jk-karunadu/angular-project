@@ -34,7 +34,10 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/path-browserify/index.js",
+              "node_modules/util/util.js",
+              "node_modules/os-browserify/browser.js"
             ],
             "server": "src/main.server.ts",
             "prerender": true,
