@@ -20,6 +20,7 @@ export class UserLoginComponent {
   constructor(private seller: SellerService, private router: Router) {}
 
   toggle(s: string) {
+    console.log(this.showlogin);
     this.showlogin = !this.showlogin;
   }
 

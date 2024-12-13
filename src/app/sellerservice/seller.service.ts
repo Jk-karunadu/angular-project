@@ -4,6 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { login, Product, SignUp } from '../datatype';
 import { Router } from '@angular/router';
 import { environment } from '../../../environment.prod';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';  // Add this import statement
+
 
 console.log(`${environment.backendUrl}`)
 
@@ -25,31 +28,61 @@ export class SellerService {
     this.cartLengthSubject.next(length);
   }
 
-  sellerSignUp(data: SignUp): void {
-    this.http.post(`${environment.backendUrl}/seller`, data, { observe: 'response' })
-      .subscribe((res) => {
-        localStorage.setItem('seller', JSON.stringify(res.body));
-        this.router.navigate(['seller-home']);
-      });
+  sellerSignUp(data: SignUp): Observable<any> {  // Return Observable<any> instead of void
+    return this.http.post(`${environment.backendUrl}/seller`, data, { observe: 'response' })
+      .pipe(
+        catchError((error) => {
+          console.error('Sign up failed', error);
+          alert('An error occurred during signup. Please try again later.');
+         return of(null); // Return an observable with null on error
+        })
+      );
   }
 
   userSignUp(data: SignUp): void {
     this.http.post(`${environment.backendUrl}/user`, data, { observe: 'response' })
+      .pipe(
+        catchError((error) => {
+          console.error('Sign up failed', error);
+          alert('An error occurred during signup. Please try again later.');
+          return [];
+        })
+      )
       .subscribe((res) => {
-        localStorage.setItem('user', JSON.stringify(res.body));
-        this.router.navigate(['']);
+        if (res && res.body) {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('user', JSON.stringify(res.body));
+          }
+          this.router.navigate(['']);
+        }
       });
   }
 
   addProduct(data: any): Observable<any> {
-    return this.http.post(`${environment.backendUrl}/products`, data, { observe: 'response' });
+    return this.http.post(`${environment.backendUrl}/products`, data, { observe: 'response' })
+      .pipe(
+        catchError((error) => {
+          console.error('Failed to add product', error);
+          alert('An error occurred while adding the product.');
+          return [];
+        })
+      );
   }
 
   sellerLogin(data: login): void {
     this.http.get(`${environment.backendUrl}/seller?email=${data.email}&password=${data.password}`, { observe: 'response' })
+      .pipe(
+        catchError((error) => {
+          console.error('Login failed', error);
+          alert('An error occurred during login. Please try again later.');
+          return [];
+        })
+      )
       .subscribe((res: any) => {
         if (res && res.body && res.body.length) {
-          localStorage.setItem('seller', JSON.stringify(res.body));
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('seller', JSON.stringify(res.body));
+          }
           this.router.navigate(['seller-home']);
         } else {
           alert('Login failed, incorrect email or password.');
@@ -60,9 +93,18 @@ export class SellerService {
 
   userLogin(data: login): void {
     this.http.get(`${environment.backendUrl}/user?email=${data.email}&password=${data.password}`, { observe: 'response' })
+      .pipe(
+        catchError((error) => {
+          console.error('Login failed', error);
+          alert('An error occurred during login. Please try again later.');
+          return [];
+        })
+      )
       .subscribe((res: any) => {
         if (res && res.body && res.body.length) {
-          localStorage.setItem('user', JSON.stringify(res.body));
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('user', JSON.stringify(res.body));
+          }
           this.router.navigate(['']);
         } else {
           alert('Login failed, incorrect email or password.');
@@ -70,6 +112,7 @@ export class SellerService {
         }
       });
   }
+
 
   getproducts(): Observable<any> {
     return this.http.get(`${environment.backendUrl}/products`);
@@ -136,20 +179,21 @@ export class SellerService {
   }
 
   reloadSeller(): void {
-    if (localStorage.getItem('seller')) {
+    if (typeof window !== 'undefined' && localStorage.getItem('seller')) {
       this.isSellerLoggedIn.next(true);
       this.router.navigate(['seller-home']);
     } else {
       this.router.navigate(['seller']);
     }
   }
-
+  
   reloaduser(): void {
-    if (localStorage.getItem('user')) {
+    if (typeof window !== 'undefined' && localStorage.getItem('user')) {
       this.isUserLoggedIn.next(true);
       this.router.navigate(['']);
     } else {
       this.router.navigate(['user-login']);
     }
   }
+  
 }
