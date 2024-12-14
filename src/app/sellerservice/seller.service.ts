@@ -28,16 +28,25 @@ export class SellerService {
     this.cartLengthSubject.next(length);
   }
 
-  sellerSignUp(data: SignUp): Observable<any> {  // Return Observable<any> instead of void
-    return this.http.post(`${environment.backendUrl}/seller`, data, { observe: 'response' })
+  sellerSignUp(data: SignUp): void {
+    this.http.post(`${environment.backendUrl}/seller`, data, { observe: 'response' })
       .pipe(
         catchError((error) => {
           console.error('Sign up failed', error);
-          alert('An error occurred during signup. Please try again later.');
-         return of(null); // Return an observable with null on error
+          alert('An error occurred during seller signup. Please try again later.');
+          return []; // Return an observable with null on error
         })
-      );
+      )
+      .subscribe((res) => {
+        if (res && res.body) {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('seller', JSON.stringify(res.body));
+          }
+          this.router.navigate(['seller-home']); // Redirect to the seller's home page or any desired route
+        }
+      });
   }
+  
 
   userSignUp(data: SignUp): void {
     this.http.post(`${environment.backendUrl}/user`, data, { observe: 'response' })

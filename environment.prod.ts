@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    backendUrl: 'https://e-commerce-8gne.onrender.com'
+    backendUrl: 'https://e-commerce-beige-omega.vercel.app'
   };
 
   

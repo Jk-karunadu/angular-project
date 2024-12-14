@@ -41,6 +41,7 @@ export class SellerComponent {
   signUp(form: NgForm) {
     const passwordControl = form.controls['password'];
     const passwordValidation = this.validatePassword(passwordControl);
+    console.warn("entered signup");
 
     if (passwordValidation) {
       passwordControl.setErrors(passwordValidation);

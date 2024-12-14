@@ -147,13 +147,5 @@ export class NavbarComponent {
     }
   }
 
-  sellerSignUp(data: any): void {
-    this.seller.sellerSignUp(data).subscribe((res: any) => {
-      if (res && res.body) {
-        // Handle successful signup
-        localStorage.setItem('seller', JSON.stringify(res.body));
-        this.router.navigate(['seller-home']);
-      }
-    });
-  }
+  
 }
